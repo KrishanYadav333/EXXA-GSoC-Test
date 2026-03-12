@@ -372,8 +372,8 @@ def compare_clustering_algorithms(
         }
         print("GMM clustering completed")
     except MemoryError:
-        print("⚠️  GMM clustering skipped: insufficient memory for full covariance with high-dimensional data")
-        print("   (GMM requires ~255 GB for 184K features)")
+        print("WARNING: GMM clustering skipped: insufficient memory for full covariance with high-dimensional data")
+        print("         (GMM requires ~255 GB for 184K features)")
     
     return results
 
