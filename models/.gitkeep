@@ -1,0 +1,25 @@
+# Models Directory
+
+This directory contains trained model weights.
+
+## Files
+
+- `autoencoder_best.pth` - Best model checkpoint during training (auto-saved)
+- `autoencoder_final.pth` - Final model after training completion
+
+## Usage
+
+```python
+from src.autoencoder import ImprovedAutoencoder
+import torch
+
+# Load model
+model = ImprovedAutoencoder(latent_dim=512)
+model.load_state_dict(torch.load('models/autoencoder_best.pth'))
+model.eval()
+```
+
+## Note
+
+Model files are excluded from git (see `.gitignore`) due to size.
+Pre-trained models are available via Google Drive (see main README).

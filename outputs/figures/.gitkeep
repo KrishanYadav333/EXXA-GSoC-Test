@@ -1,0 +1,17 @@
+# Output Figures
+
+Generated plots are saved here automatically during notebook execution.
+
+## Expected Outputs
+
+1. `01_sample_disks.png` - Sample disk images from dataset
+2. `02_training_curves.png` - Training and validation loss
+3. `03_reconstruction_comparison.png` - Original vs reconstructed images
+4. `04_metric_distributions.png` - MSE and MS-SSIM distributions
+5. `05_elbow_curve.png` - Optimal K selection
+6. `06_kmeans_umap_clusters.png` - K-Means clusters in UMAP space
+7. `07_hdbscan_umap_clusters.png` - HDBSCAN clusters in UMAP space
+8. `08_kmeans_pca_clusters.png` - K-Means clusters in PCA space
+9. `09_cluster_size_distribution.png` - Cluster size histogram
+10. `10_cluster_representatives.png` - Representative images per cluster
+11. `11_summary_figure.png` - Comprehensive summary figure

@@ -1,0 +1,69 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints
+
+# Data files (FITS files can be large)
+data/*.fits
+data/*.fit
+data/raw/
+data/processed/
+
+# Model checkpoints (large files)
+models/*.pth
+models/*.pt
+models/*.h5
+models/*.ckpt
+!models/.gitkeep
+
+# Outputs
+outputs/*.png
+outputs/*.jpg
+outputs/*.pdf
+outputs/figures/*.png
+outputs/figures/*.jpg
+!outputs/.gitkeep
+!outputs/figures/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs
+*.log
