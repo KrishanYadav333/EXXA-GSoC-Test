@@ -61,7 +61,6 @@ outputs/figures/*.jpg
 
 # Submission files (keep local only)
 SUBMISSION_CHECKLIST.md
-notebooks/exxa_complete_pipeline_colab.ipynb
 .idea/
 *.swp
 *.swo
