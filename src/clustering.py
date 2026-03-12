@@ -364,11 +364,16 @@ def compare_clustering_algorithms(
     
     # GMM
     print("\n--- Gaussian Mixture Model ---")
-    labels_gmm = clusterer.gmm_clustering(n_components=n_clusters)
-    results['gmm'] = {
-        'labels': labels_gmm,
-        'metrics': clusterer.evaluate_clustering(labels_gmm)
-    }
+    try:
+        labels_gmm = clusterer.gmm_clustering(n_components=n_clusters)
+        results['gmm'] = {
+            'labels': labels_gmm,
+            'metrics': clusterer.evaluate_clustering(labels_gmm)
+        }
+        print("GMM clustering completed")
+    except MemoryError:
+        print("⚠️  GMM clustering skipped: insufficient memory for full covariance with high-dimensional data")
+        print("   (GMM requires ~255 GB for 184K features)")
     
     return results
 
