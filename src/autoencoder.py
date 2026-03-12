@@ -141,11 +141,11 @@ class ImprovedAutoencoder(nn.Module):
         if self.use_skip_connections and skip_connections is not None:
             e1, e2, e3, e4 = skip_connections
             
-            # Concatenate skip connections
-            d4 = self.dec4(torch.cat([d5, e4], dim=1))
-            d3 = self.dec3(torch.cat([d4, e3], dim=1))
-            d2 = self.dec2(torch.cat([d3, e2], dim=1))
-            d1 = self.dec1(torch.cat([d2, e1], dim=1))
+            # Concatenate skip connections (resize skip connections to match decoder size)
+            d4 = self.dec4(torch.cat([d5, self._match_size(e4, d5)], dim=1))
+            d3 = self.dec3(torch.cat([d4, self._match_size(e3, d4)], dim=1))
+            d2 = self.dec2(torch.cat([d3, self._match_size(e2, d3)], dim=1))
+            d1 = self.dec1(torch.cat([d2, self._match_size(e1, d2)], dim=1))
         else:
             d4 = self.dec4(d5)
             d3 = self.dec3(d4)
@@ -159,6 +159,23 @@ class ImprovedAutoencoder(nn.Module):
         out = self.size_adjust(out)
         
         return out
+    
+    def _match_size(self, skip, decoder):
+        """
+        Resize skip connection to match decoder feature map size.
+        
+        Args:
+            skip: Skip connection tensor
+            decoder: Decoder tensor to match size with
+            
+        Returns:
+            Resized skip connection
+        """
+        if skip.shape[2:] != decoder.shape[2:]:
+            skip = torch.nn.functional.interpolate(
+                skip, size=decoder.shape[2:], mode='bilinear', align_corners=True
+            )
+        return skip
     
     def forward(self, x):
         """
@@ -326,7 +343,10 @@ def train_autoencoder(
         # Save best model
         if avg_val_loss < best_val_loss:
             best_val_loss = avg_val_loss
-            torch.save(model.state_dict(), 'models/autoencoder_best.pth')
+            # Create models directory if it doesn't exist
+            import os
+            os.makedirs('../models', exist_ok=True)
+            torch.save(model.state_dict(), '../models/autoencoder_best.pth')
     
     print(f"\nTraining complete. Best validation loss: {best_val_loss:.6f}")
     

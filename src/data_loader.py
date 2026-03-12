@@ -54,13 +54,12 @@ class FITSDataLoader:
                 # Extract first layer (index 0) from the data cube
                 data = hdul[0].data
                 
-                # Handle different data cube formats
-                if len(data.shape) == 4:
-                    image = data[0, 0, :, :]  # 4D: [batch, channel, height, width]
-                elif len(data.shape) == 3:
-                    image = data[0, :, :]  # 3D: [channel, height, width]
-                else:
-                    image = data  # 2D: [height, width]
+                # Handle different data cube formats and squeeze to 2D
+                while len(data.shape) > 2:
+                    # Take first slice of highest dimension until we get 2D
+                    data = data[0]
+                
+                image = data  # Now guaranteed to be 2D
                 
                 hdul.close()
                 

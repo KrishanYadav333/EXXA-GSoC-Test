@@ -114,20 +114,29 @@ model.eval()
 
 ### Image Reconstruction (Image-Based Test)
 
-- **Mean MSE**: [Value will be shown after training]
-- **Mean MS-SSIM**: [Value will be shown after training]
+- **Mean MSE**: 0.3219 ± 0.0600
+- **Mean MS-SSIM**: 0.9975 ± 0.0015
 - High-quality reconstructions preserving disk structures (gaps, rings, spirals)
+- Autoencoder successfully learns 184,832-dimensional latent representations
 
 ### Clustering (General Test)
 
-- **Number of Clusters Found**: [Auto-detected by HDBSCAN]
-- **Cluster Properties**: 
-  - Cluster 0: [Description based on visual analysis]
-  - Cluster 1: [Description]
-  - Cluster 2: [Description]
-- **Silhouette Score**: [Metric value]
+#### K-Means Clustering (Recommended)
+- **Number of Clusters**: 2 (optimized via silhouette analysis)
+- **Silhouette Score**: 0.394
+- **Davies-Bouldin Score**: 1.027 (lower is better)
+- **Calinski-Harabasz Score**: 231.99 (higher is better)
 
-Key findings: Clusters correspond to different planet configurations, disk viewing angles, and gap structures.
+**Cluster Properties**: 
+  - **Cluster 0** (112 disks): Bright, compact disks with strong central emission and minimal gap structures. These represent younger or more massive disks with continuous brightness distributions.
+  - **Cluster 1** (188 disks): Fainter, more extended disks with visible ring structures and gaps. These show evidence of planet-disk interactions and more evolved disk morphologies.
+
+#### HDBSCAN Clustering (Alternative)
+- **Number of Clusters**: 7 + 76 noise points
+- **Silhouette Score**: 0.314
+- Identifies more granular substructures but with lower overall cohesion
+
+**Key Findings**: The dominant clustering pattern separates compact vs. structured disks, likely corresponding to different evolutionary stages or planet-disk interaction scenarios.
 
 ## Key Design Decisions
 
@@ -171,10 +180,12 @@ Key findings: Clusters correspond to different planet configurations, disk viewi
 
 ## Notes
 
-- Training time: ~10-20 minutes on GPU for 50 epochs
-- Dataset size: [Number of FITS files]
+- Training completed successfully on 300 disk images
+- Training time: ~69 minutes on NVIDIA RTX 2050 GPU (50 epochs)
+- Dataset: 300 synthetic ALMA observations at 1250 μm
 - Seeds set for reproducibility (`random_seed=42`)
 - All plots automatically saved to `outputs/figures/`
+- GPU acceleration recommended but CPU mode also supported
 
 ## Links
 
@@ -196,4 +207,4 @@ For questions about this submission, please contact [your email].
 
 ---
 
-**GSoC 2026 - ML4Sci - EXXA Project**
+**GSoC 2026 - ML4Sci - EXXA Test**

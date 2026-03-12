@@ -43,11 +43,15 @@ models/*.h5
 models/*.ckpt
 !models/.gitkeep
 
-# Outputs
+# Outputs (ignore all output files including large numpy arrays)
 outputs/*.png
 outputs/*.jpg
 outputs/*.pdf
+outputs/*.npz
+outputs/*.json
 outputs/figures/*.png
+!outputs/.gitkeep
+!outputs/figures/.gitkeep
 outputs/figures/*.jpg
 !outputs/.gitkeep
 !outputs/figures/.gitkeep
