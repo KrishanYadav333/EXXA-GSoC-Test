@@ -269,7 +269,8 @@ def train_autoencoder(
     val_loader: torch.utils.data.DataLoader,
     num_epochs: int = 50,
     learning_rate: float = 1e-3,
-    device: str = 'cuda' if torch.cuda.is_available() else 'cpu'
+    device: str = 'cuda' if torch.cuda.is_available() else 'cpu',
+    save_dir: str = '../models'
 ) -> Tuple[nn.Module, dict]:
     """
     Train the autoencoder model.
@@ -281,6 +282,7 @@ def train_autoencoder(
         num_epochs: Number of training epochs
         learning_rate: Learning rate for optimizer
         device: Device to train on ('cuda' or 'cpu')
+        save_dir: Directory to save the best model checkpoint
         
     Returns:
         Tuple of (trained model, history dict)
@@ -343,10 +345,9 @@ def train_autoencoder(
         # Save best model
         if avg_val_loss < best_val_loss:
             best_val_loss = avg_val_loss
-            # Create models directory if it doesn't exist
             import os
-            os.makedirs('../models', exist_ok=True)
-            torch.save(model.state_dict(), '../models/autoencoder_best.pth')
+            os.makedirs(save_dir, exist_ok=True)
+            torch.save(model.state_dict(), os.path.join(save_dir, 'autoencoder_best.pth'))
     
     print(f"\nTraining complete. Best validation loss: {best_val_loss:.6f}")
     
