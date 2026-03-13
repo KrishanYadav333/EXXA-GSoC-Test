@@ -140,32 +140,45 @@ class DiskClusterer:
     def find_optimal_k(
         self,
         k_range: range = range(2, 11),
-        method: str = 'silhouette'
+        method: str = 'silhouette',
+        pca_components: int = 50
     ) -> Tuple[int, Dict[int, float]]:
         """
         Find optimal number of clusters using elbow method or silhouette analysis.
+
+        Applies PCA pre-reduction when D > 500 for memory/speed efficiency.
         
         Args:
             k_range: Range of k values to test
             method: 'silhouette', 'davies_bouldin', or 'calinski_harabasz'
+            pca_components: PCA target dims when latent_features.shape[1] > 500
             
         Returns:
             Tuple of (optimal_k, scores_dict)
         """
+        from sklearn.decomposition import PCA
+
+        if self.latent_features.shape[1] > 500 and pca_components is not None:
+            print(f"  PCA pre-reduction: {self.latent_features.shape[1]}D → {pca_components}D for silhouette analysis...")
+            pca = PCA(n_components=pca_components, random_state=42)
+            features = pca.fit_transform(self.latent_features)
+        else:
+            features = self.latent_features
+
         scores = {}
-        
+
         for k in k_range:
             kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
-            labels = kmeans.fit_predict(self.latent_features)
+            labels = kmeans.fit_predict(features)
             
             if method == 'silhouette':
-                score = silhouette_score(self.latent_features, labels)
+                score = silhouette_score(features, labels)
                 scores[k] = score
             elif method == 'davies_bouldin':
-                score = davies_bouldin_score(self.latent_features, labels)
+                score = davies_bouldin_score(features, labels)
                 scores[k] = -score  # Lower is better, so negate
             elif method == 'calinski_harabasz':
-                score = calinski_harabasz_score(self.latent_features, labels)
+                score = calinski_harabasz_score(features, labels)
                 scores[k] = score
         
         optimal_k = max(scores, key=scores.get)
@@ -322,19 +335,35 @@ class DimensionalityReducer:
 
 def compare_clustering_algorithms(
     latent_features: np.ndarray,
-    n_clusters: int = 5
+    n_clusters: int = 5,
+    pca_components: int = 50
 ) -> Dict[str, Dict]:
     """
     Compare multiple clustering algorithms on the same data.
+
+    High-dimensional latent spaces (D > 500) are automatically reduced with PCA
+    before clustering to prevent OOM crashes (GMM full-covariance needs D² memory).
     
     Args:
         latent_features: Latent feature array [N, D]
         n_clusters: Number of clusters for algorithms that require it
+        pca_components: Target dimensionality for PCA pre-reduction when D > 500
         
     Returns:
         Dictionary with results for each algorithm
     """
-    clusterer = DiskClusterer(latent_features)
+    from sklearn.decomposition import PCA
+
+    if latent_features.shape[1] > 500 and pca_components is not None:
+        print(f"  Reducing {latent_features.shape[1]}D → {pca_components}D with PCA (memory efficiency)...")
+        pca = PCA(n_components=pca_components, random_state=42)
+        features = pca.fit_transform(latent_features)
+        ev = pca.explained_variance_ratio_.sum()
+        print(f"  PCA explained variance retained: {ev:.4f}")
+    else:
+        features = latent_features
+
+    clusterer = DiskClusterer(features)
     
     results = {}
     
@@ -345,7 +374,7 @@ def compare_clustering_algorithms(
         'labels': labels_km,
         'metrics': clusterer.evaluate_clustering(labels_km)
     }
-    
+
     # HDBSCAN
     print("\n--- HDBSCAN ---")
     labels_hdb = clusterer.hdbscan_clustering(min_cluster_size=10)
@@ -353,7 +382,7 @@ def compare_clustering_algorithms(
         'labels': labels_hdb,
         'metrics': clusterer.evaluate_clustering(labels_hdb)
     }
-    
+
     # Agglomerative
     print("\n--- Agglomerative ---")
     labels_agg = clusterer.agglomerative_clustering(n_clusters=n_clusters)
@@ -361,8 +390,8 @@ def compare_clustering_algorithms(
         'labels': labels_agg,
         'metrics': clusterer.evaluate_clustering(labels_agg)
     }
-    
-    # GMM
+
+    # GMM — safe after PCA reduction (full covariance on raw 184K-D would need ~137 GB)
     print("\n--- Gaussian Mixture Model ---")
     try:
         labels_gmm = clusterer.gmm_clustering(n_components=n_clusters)
@@ -370,11 +399,9 @@ def compare_clustering_algorithms(
             'labels': labels_gmm,
             'metrics': clusterer.evaluate_clustering(labels_gmm)
         }
-        print("GMM clustering completed")
-    except MemoryError:
-        print("WARNING: GMM clustering skipped: insufficient memory for full covariance with high-dimensional data")
-        print("         (GMM requires ~255 GB for 184K features)")
-    
+    except Exception as e:
+        print(f"GMM skipped ({type(e).__name__}: {e})")
+
     return results
 
 
