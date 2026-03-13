@@ -1,7 +1,7 @@
 # EXXA GSoC 2026 Test - Protoplanetary Disk Analysis
 
 **ML4Sci - EXXA Project**  
-**Applicant:** [Your Name]  
+**Applicant:** Krishan Yadav  
 **Tests Completed:** General Test + Image-Based Test
 
 ## Overview
@@ -75,7 +75,7 @@ EXXA-GSoC-Test/
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/EXXA-GSoC-Test.git
+git clone https://github.com/KrishanYadav333/EXXA-GSoC-Test.git
 cd EXXA-GSoC-Test
 
 # Install dependencies
@@ -189,9 +189,9 @@ model.eval()
 
 ## Links
 
-- **Google Colab Notebook**: [Link to Colab]
-- **Pre-trained Model**: [Google Drive link]
-- **GitHub Repository**: [This repo]
+- **Google Colab Notebook**: https://colab.research.google.com/github/KrishanYadav333/EXXA-GSoC-Test/blob/main/notebooks/exxa_complete_pipeline_colab.ipynb
+- **Pre-trained Model**: https://drive.google.com/file/d/1Hx3WM4OYKnIPyvv5Kw6mkTN2cOMWQerH/view?usp=drive_link
+- **GitHub Repository**: https://github.com/KrishanYadav333/EXXA-GSoC-Test
 
 ## References
 
@@ -203,7 +203,7 @@ model.eval()
 
 ## Contact
 
-For questions about this submission, please contact [your email].
+For questions about this submission, please contact kryshan753@gmail.com.
 
 ---
 
