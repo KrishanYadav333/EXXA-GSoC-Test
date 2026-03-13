@@ -29,6 +29,7 @@ env/
 # Jupyter Notebook
 .ipynb_checkpoints
 *.ipynb_checkpoints
+notebooks/exxa_complete_pipeline.ipynb
 
 # Data files (FITS files can be large)
 data/*.fits
